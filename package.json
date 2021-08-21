@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "[Node.js] HW 1",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index",
@@ -29,6 +28,7 @@
     "nodemon": "^2.0.12"
   },
   "dependencies": {
-    "commander": "^8.1.0"
+    "commander": "^8.1.0",
+    "uuid": "^8.3.2"
   }
 }

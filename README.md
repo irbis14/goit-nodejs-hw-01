@@ -4,7 +4,7 @@
 
 # Получаем и выводим весь список контактов
 
-https://monosnap.com/file/rLdKOOl0MF7QNtk9GYgbbuWLCUzmu7
+https://monosnap.com/file/TykrtawV7JULK9o8Xg4OR03Eu6Hju2
 
 # Получаем контакт по id
 

@@ -1,9 +1,8 @@
 const fs = require("fs/promises");
-const url = require("url");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 
-contactsPath = path.join(__dirname, "db/contacts.json");
+const contactsPath = path.join(__dirname, "db/contacts.json");
 
 const update = async (items) => {
   const itemsString = JSON.stringify(items);

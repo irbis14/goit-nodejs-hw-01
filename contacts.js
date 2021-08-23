@@ -5,10 +5,15 @@ const { v4: uuidv4 } = require("uuid");
 
 contactsPath = path.join(__dirname, "db/contacts.json");
 
+const update = async (items) => {
+  const itemsString = JSON.stringify(items);
+  await fs.writeFile(contactsPath, itemsString);
+};
+
 const listContacts = async () => {
   try {
     const data = await fs.readFile(contactsPath);
-    return (contacts = JSON.parse(data)); //возвращает JSON
+    return (contacts = JSON.parse(data));
   } catch (error) {
     throw error;
   }
@@ -17,7 +22,8 @@ const listContacts = async () => {
 const getContactById = async (contactId) => {
   try {
     const contacts = await listContacts();
-    return (contact = contacts.filter((item) => item.id === contactId));
+    const contactById = contacts.filter((item) => item.id === contactId);
+    return contactById;
   } catch (error) {
     throw error;
   }
@@ -31,25 +37,29 @@ const removeContact = async (contactId) => {
       throw new Error(`Contacts with id=${contactId} not found`);
     }
     const restContacts = contacts.filter((item) => item.id !== contactId);
-    const restContactsString = JSON.stringify(restContacts);
-    await fs.writeFile(contactsPath, restContactsString);
-  } catch (error) {}
+    await update(restContacts);
+    return contacts[index];
+  } catch (error) {
+    throw error;
+  }
 };
 
 const addContact = async (name, email, phone) => {
   try {
     const contacts = await listContacts();
-    const newContact = {
-      id: uuidv4(),
+    const data = {
       name,
       email,
       phone,
     };
-    const newContactString = JSON.stringify(newContact);
+    const newContact = { ...data, id: uuidv4() };
+    // const newContactString = JSON.stringify(newContact);
     if (contacts.find((contact) => contact.name === name)) {
       throw new Error(`Contact "${name}" is already exist`);
     }
-    await fs.appendFile(contactsPath, newContactString);
+    contacts.push(newContact);
+    await update(contacts);
+    return newContact;
   } catch (error) {
     throw error;
   }
@@ -61,21 +71,3 @@ module.exports = {
   removeContact,
   addContact,
 };
-
-/* // Выводит данные в консоль
-(async () => {
-  try {
-    const allContacts = await listContacts();
-    console.log(allContacts, "--listContacts");
-  } catch (error) {
-    console.log(error.message);
-  }
-})();
-
-// Ничего не выводит: Promise { <pending> } --listContacts
-const allContacts = listContacts();
-console.log(allContacts, "--listContacts");
-
-// А так выводит
-const allContacts = listContacts().then;
-console.log(allContacts, "--listContacts"); */

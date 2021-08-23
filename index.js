@@ -1,23 +1,71 @@
+const { Command } = require("commander");
 const contactsOperations = require("./contacts");
 
-/* (async () => {
-  try {
-    const allContacts = await contactsOperations.listContacts();
-    console.log(allContacts, "---listContacts");
+const program = new Command();
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
 
-    const contactById = await contactsOperations.getContactById(2);
-    console.log(contactById, "---getContactById");
+program.parse(process.argv);
 
-    const removeContact = await contactsOperations.removeContact(3);
-    console.log(removeContact, "---removeContact");
+const argv = program.opts();
 
-    const addcontact = await contactsOperations.addContact(
-      "Nina",
-      "nina@gmail.com",
-      "1234567"
-    );
-    console.log(addcontact, "---addContact");
-  } catch (error) {
-    console.log(error.message);
+function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case "list":
+      (async () => {
+        try {
+          const contactList = await contactsOperations.listContacts();
+          console.table(contactList);
+        } catch (error) {
+          console.log(error.message);
+        }
+      })();
+      break;
+
+    case "get":
+      (async () => {
+        try {
+          const contactById = await contactsOperations.getContactById(+id);
+          console.table(contactById);
+        } catch (error) {
+          console.log(error.message);
+        }
+      })();
+      break;
+
+    case "add":
+      (async () => {
+        try {
+          const newContact = await contactsOperations.addContact(
+            name,
+            email,
+            phone
+          );
+          console.table(newContact);
+        } catch (error) {
+          console.log(error.message);
+        }
+      })();
+      break;
+
+    case "remove":
+      (async () => {
+        try {
+          const removedContact = await contactsOperations.removeContact(+id);
+          console.table(removedContact);
+        } catch (error) {
+          console.log(error.message);
+        }
+      })();
+      break;
+
+    default:
+      console.warn("\x1B[31m Unknown action type!");
   }
-})(); */
+}
+
+invokeAction(argv);
